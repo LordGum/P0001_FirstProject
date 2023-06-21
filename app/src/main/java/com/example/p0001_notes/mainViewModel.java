@@ -61,41 +61,6 @@ public class mainViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<Note> getNote(int id) {
-        /*
-        class GetThread implements Runnable{
-            private  int id;
-            private volatile Note noteValue;
-
-            private GetThread (int id) {
-                this.id = id;
-            }
-
-            @Override
-            public void run() {
-                noteValue = noteDatabase.notesDao().getNote(id);
-            }
-
-            private Note getNoteValue() {
-                if(noteValue == null) Log.d("TAG", "noteValue is null");
-
-                return noteValue;
-            }
-        }
-
-        GetThread getThread = new GetThread(id);
-        Thread thread = new Thread(getThread);
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Log.d("TAG", getThread.getNoteValue().getName());
-        return getThread.getNoteValue();
-
-         */
-
-
         Disposable disposable = getNoteRx(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -118,5 +83,11 @@ public class mainViewModel extends AndroidViewModel {
                 return noteDatabase.notesDao().getNote(id);
             }
         });
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.dispose();
     }
 }
